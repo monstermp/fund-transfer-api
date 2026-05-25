@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: ./docker/php
+    container_name: fund_transfer_app
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      DATABASE_URL: "mysql://app:app_password@database:3306/fund_transfer?serverVersion=8.0.32&charset=utf8mb4"
+      REDIS_URL: "redis://redis:6379"
+      APP_ENV: dev
+      APP_SECRET: change_me_in_production
+      JWT_SECRET_KEY: '%kernel.project_dir%/config/jwt/private.pem'
+      JWT_PUBLIC_KEY: '%kernel.project_dir%/config/jwt/public.pem'
+      JWT_PASSPHRASE: change_me_in_production
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: fund_transfer_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+  database:
+    image: mysql:8.0
+    container_name: fund_transfer_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fund_transfer
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: fund_transfer_redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  db-data:

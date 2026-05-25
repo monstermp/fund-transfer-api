@@ -1,0 +1,19 @@
+/vendor/
+/var/
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+.phpunit.cache/
+.phpunit.result.cache
+composer.phar
+.DS_Store
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###

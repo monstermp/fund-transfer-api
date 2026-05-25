@@ -1,0 +1,32 @@
+### Register a new user (returns a JWT)
+# @name register
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "s3cret-password"
+}
+
+### Login (returns a JWT)
+# @name login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "s3cret-password"
+}
+
+### Transfer Funds (requires Bearer token from login/register)
+POST http://localhost:8080/api/v1/transfers
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+Idempotency-Key: 8c1d4e2a-7b9f-4a0c-9e3d-1b2a3c4d5e6f
+
+{
+  "fromAccount": "ACC-001",
+  "toAccount":   "ACC-002",
+  "amountMinor": "2500",
+  "currency":    "USD"
+}

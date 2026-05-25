@@ -1,0 +1,24 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+    http_method_override: false
+    handle_all_throwables: true
+
+    php_errors:
+        log: true
+
+    serializer:
+        enabled: true
+
+    property_info:
+        enabled: true
+
+    property_access:
+        enabled: true
+
+    validation:
+        enabled: true
+        email_validation_mode: html5
+
+    cache:
+        app: cache.adapter.redis
+        default_redis_provider: '%env(REDIS_URL)%'
