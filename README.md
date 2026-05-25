@@ -181,17 +181,3 @@ Error body shape:
 ```json
 { "error": "INSUFFICIENT_FUNDS", "message": "..." }
 ```
-
----
-
-## What I would add next (with more time)
-
-1. **Refresh tokens** — short-lived access JWTs + long-lived refresh tokens stored in Redis with revocation support.
-2. **Per-user account ownership** — tie `Account` rows to the authenticated `User` and enforce that callers can only transfer from accounts they own.
-3. **Outbox pattern + Symfony Messenger** — publish `TransferCompleted` events to RabbitMQ for downstream consumers (notifications, ledger sync) without 2-phase commits.
-4. **Real load test** — a `k6` script firing 1000 concurrent transfers from the same source account to prove no negative balances occur.
-5. **Distributed tracing** — OpenTelemetry spans across controller → service → DB.
-6. **Multi-currency transfers** — FX rate service + separate ledger entries.
-7. **Soft rate limiting** — Symfony RateLimiter component backed by Redis, per API key.
-8. **Audit log** — append-only `ledger_entries` table (debit/credit pairs) so balances can be reconstructed from history.
-9. **Doctrine migrations** instead of `schema:create` for production.
